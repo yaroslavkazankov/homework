@@ -7,6 +7,9 @@ class Student():
         self.courses_in_progress = ['Python','C#']
         self.grades = {}
 
+    def __lt__(self, other):
+        return self.avg_grade() < other.avg_grade()
+
     def rate_l(self, lecturer, course, grade):
         if isinstance(lecturer, Lecturer) and course in lecturer.courses_attached and course in self.courses_in_progress:
             if course in lecturer.grades:
@@ -32,9 +35,6 @@ class Student():
                f'Курсы в прочессе изучения: {self.courses_in_progress}\n'\
                f'Завершённые курсы: {self.finished_courses}'
         return name
-
-
-
 
 class Mentor():
 
@@ -76,17 +76,22 @@ class Lecturer(Mentor):
         avg_grade = sum(grades_list[0])/len(grades_list[0])
         return avg_grade
 
+    def __lt__(self, other):
+        return self.avg_grade() < other.avg_grade()
+
 def comparison(human1, human2):
     if isinstance(human1, Lecturer) and isinstance(human2, Lecturer) or isinstance(human1, Student) and isinstance(human2, Student):
-        if human1.avg_grade() > human2.avg_grade():
-            answer = f'Средняя ценка {human1.name} больше средней оценки {human2.name}'
-        elif human2.avg_grade() > human1.avg_grade():
-            answer = f'Средняя ценка {human2.name} больше средней оценки {human1.name}'
+        if human1 < human2:
+            answer = f'Средняя ценка {human1.name} меньше средней оценки {human2.name}'
+        elif human2 < human1:
+            answer = f'Средняя ценка {human2.name} меньше средней оценки {human1.name}'
         else:
             answer = 'Средние оценки равны'
     else:
         answer = 'Ошибка'
     return print(answer)
+
+
 
 def course_avg_grade(course, h):
     if h == 'студент':
@@ -116,9 +121,11 @@ Reviewer.rate_hw(some_reviewer, some_student, 'Python', 9)
 Reviewer.rate_hw(some_reviewer, best_student, 'Python', 9)
 Reviewer.rate_hw(some_reviewer, some_student, 'C#', 9)
 
+Student.rate_l(some_student, some_lecturer, 'Python', 10)
 Student.rate_l(some_student, some_lecturer, 'Python', 9)
 Student.rate_l(best_student, som_lecturer, 'Python', 10)
 
-comparison(some_lecturer, som_lecturer)
 course_avg_grade('Python', 'студент')
 course_avg_grade('Python', 'лектор')
+
+comparison(som_lecturer, some_lecturer)
